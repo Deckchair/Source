@@ -11,24 +11,24 @@ The area is split into tiles and downloaded in parallel.
 
 *Parameters*
 
-`options {Object}`
+`options` {Object}
 
-`options.url {String}` data URL schema - optional
+`options.url` {String} data URL schema - optional
 
-`options.key {String}` your personal key, sign up here: https://osmbuildings.org/account/register/
+`options.key` {String} your personal key, sign up here: https://osmbuildings.org/account/register/
 
-`options.buffer {Integer}` a buffer around requested area, this extends caching - optional
+`options.buffer` {Integer} a buffer around requested area, this extends caching - optional
 
 
 ### Method getAllTiles(minX, minY, maxX, maxY, onBBoxLoaded, onTileLoaded)
 
 *Parameters*
 
-`minX, minY, maxX, maxY {Float}` bounding box in geo coordinates (EPSG:4326)
+`minX, minY, maxX, maxY` {Float} bounding box in geo coordinates (EPSG:4326)
 
-`onBBoxLoaded(json)` function that is called when all tiles are loaded, receives entire geojson
+`onBBoxLoaded(json)` {Function} is called when all tiles are loaded, receives entire geojson
 
-`onTileLoaded(x, y, zoom, json)` function that is called on every tile arrival, receives tile coordinates x, y, zoom and geojson
+`onTileLoaded(x, y, zoom, json)` {Function} is called on every tile arrival, receives tile coordinates x, y, zoom and geojson
 
 
 ## Example for Browser
