@@ -3,17 +3,33 @@
 This enables simple access to OSM Buildings (https://osmbuildings.org/) data by given bounding box.
 The area is split into tiles and downloaded in parallel.
 
-Don't forget to sign up four your personal key!
-https://osmbuildings.org/account/register/
+*Sign up four your personal key:* https://osmbuildings.org/account/register/
+
+## API
+
+Class ´OSMBuildings.Source({ options })´
+
+Parameter ´options = {
+  url: {String}, // data URL schema - optional
+  key: {String}, // your personal key, sign up here: https://osmbuildings.org/account/register/
+  buffer: {Integer} // a buffer around requested area, this extends caching - optional
+}´
+
+Method ´getAllTiles(minX, minY, maxX, maxY, onBBoxLoaded, onTileLoaded)´`
+
+Parameters ´minX, minY, maxX, maxY {Float} // these represent the bounding box in geo coordinates (EPSG:4326)´
+
+Parameter ´onTileLoaded(x, y, z, json) // a function that is called on every tile arrival, provides tile coordinates and geojson´
+
+Parameter ´onBBoxLoaded(json) // a function that is called when all tiles are loaded, provides entire geojson´
 
 
-## Example browser
+## Example for Browser
 
 Setup
 
 ~~~html
-<!DOCTYPE html>
-  <script src="OSMBuildings.Source.js"></script>
+<script src="OSMBuildings.Source.js"></script>
 ~~~
 
 Usage
@@ -37,9 +53,11 @@ var src = new OSMBuildings.Source();
 src.getAllTiles(minX, minY, maxX, maxY, onBBoxLoaded, onTileLoaded);
 ~~~
 
-## Example NodeJS
+## Example for NodeJS
 
 Setup
+
+Dependencies: XMLHttpRequest
 
 ~~~js
 npm install
