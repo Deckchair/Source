@@ -1,24 +1,32 @@
 
-var OSMBuildings;
+if (typeof OSMBuildings === 'undefined') {
+  var OSMBuildings = {};
+}
+
+if (typeof module === 'object') {
+  module.exports = OSMBuildings;
+  var XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;
+}
 
 (function() {
 
-  var url = 'https://{s}.data.osmbuildings.org/0.2/{key}/tile/15/{x}/{y}.png';
-  var tileSize = 256;
+  var url = 'https://{s}.data.osmbuildings.org/0.2/{k}/tile/15/{x}/{y}.json';
   var fixedZoom = 15;
   var tiles = {};
   var buffer = 1;
 
-  function xhr(url, onSuccess, onError) {
+  function ajax(url, onSuccess, onError) {
     var req = new XMLHttpRequest();
 
     req.onreadystatechange = function() {
       if (req.readyState !== 4) {
         return;
       }
+
       if (!req.status || req.status < 200 || req.status > 299) {
         return;
       }
+
       if (!req.responseText) {
         onError();
         return;
@@ -76,15 +84,15 @@ var OSMBuildings;
 
   //*******************************************************
 
-  OSMBuildings.Data = function(options) {
+  OSMBuildings.Source = function(options) {
     options = options || {};
     buffer = options.buffer || buffer;
     url = (options.url || url).replace('{k}', (options.key || 'anonymous'));
   };
 
-  OSMBuildings.Data.ATTRIBUTION = '© Data Service <a href="https://osmbuildings.org/copyright/">OSM Buildings</a>';
+  OSMBuildings.Source.ATTRIBUTION = '© Data Service <a href="https://osmbuildings.org/copyright/">OSM Buildings</a>';
 
-  OSMBuildings.Data.prototype.getAllTiles = function(minX, minY, maxX, maxY, callbackAll, callbackTile) {
+  OSMBuildings.Source.prototype.getAllTiles = function(minX, minY, maxX, maxY, callbackAll, callbackTile) {
     var
       min = geoToPixel(minX, maxY),
       max = geoToPixel(maxX, minY),
@@ -98,8 +106,8 @@ var OSMBuildings;
       for (x = min[0]; x <= max[0]; x++) {
         key = x + ',' + y;
         if (tiles[key]) {
-          res.push(tiles[tile.key].json);
-        } else {
+          res.push(tiles[key].json);
+        } else {
           queue.push({ x: x, y: y, key: key, dist: getDistance([x, y], center) });
         }
       }
@@ -109,14 +117,15 @@ var OSMBuildings;
 			return a.dist - b.dist;
 		});
 
-    var queue = queue.length;
+    var remaining = queue.length;
 		queue.forEach(function(tile) {
       var s = 'abcd'[(tile.x+tile.y) % 4];
-      var u = url.replace('{s}', s).replace('{x}', tile.x).replace('{y}', tile.y);
+      var u = url.replace('{s}', s).replace('{x}', tile.x).replace('{y}', tile.y).replace('{z}', fixedZoom);
 
-      tiles[tile.key].xhr = xhr(u, function(json) { // success
+      tiles[tile.key] = {};
+      tiles[tile.key].req = ajax(u, function(json) { // success
         remaining--;
-        callbackTile && callbackTile(json);
+        callbackTile && callbackTile(tile.x, tile.y, fixedZoom, json);
         tiles[tile.key].json = json;
         res.push(json);
         delete tiles[tile.key].req;

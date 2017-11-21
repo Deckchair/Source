@@ -1,0 +1,20 @@
+{
+  "name": "osmb-source",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OSMBuildings/Source.git"
+  },
+  "author": "Jan Marsch <jama@keks.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/OSMBuildings/Source/issues"
+  },
+  "homepage": "https://osmbuildings.org/",
+  "dependencies": {
+    "xmlhttprequest": "^1.8.0"
+  }
+}
