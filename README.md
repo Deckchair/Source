@@ -7,21 +7,28 @@ The area is split into tiles and downloaded in parallel.
 
 ## API
 
-Class ´OSMBuildings.Source({ options })´
+### Class OSMBuildings.Source({ options })
 
-Parameter ´options = {
-  url: {String}, // data URL schema - optional
-  key: {String}, // your personal key, sign up here: https://osmbuildings.org/account/register/
-  buffer: {Integer} // a buffer around requested area, this extends caching - optional
-}´
+*Parameters*
 
-Method ´getAllTiles(minX, minY, maxX, maxY, onBBoxLoaded, onTileLoaded)´`
+`options {Object}`
 
-Parameters ´minX, minY, maxX, maxY {Float} // these represent the bounding box in geo coordinates (EPSG:4326)´
+`options.url {String}` data URL schema - optional
 
-Parameter ´onTileLoaded(x, y, z, json) // a function that is called on every tile arrival, provides tile coordinates and geojson´
+`options.key {String}` your personal key, sign up here: https://osmbuildings.org/account/register/
 
-Parameter ´onBBoxLoaded(json) // a function that is called when all tiles are loaded, provides entire geojson´
+`options.buffer {Integer}` a buffer around requested area, this extends caching - optional
+
+
+### Method getAllTiles(minX, minY, maxX, maxY, onBBoxLoaded, onTileLoaded)
+
+*Parameters*
+
+`minX, minY, maxX, maxY {Float}` bounding box in geo coordinates (EPSG:4326)
+
+`onBBoxLoaded(json)` function that is called when all tiles are loaded, receives entire geojson
+
+`onTileLoaded(x, y, zoom, json)` function that is called on every tile arrival, receives tile coordinates x, y, zoom and geojson
 
 
 ## Example for Browser
@@ -40,15 +47,14 @@ var minY = 52.5131;
 var maxX = 13.4146;
 var maxY = 52.5237;
 
-function onTileLoaded(x, y, z, json) {
-  console.log('TILE', x, y, z, json.features.length);
+function onTileLoaded(x, y, zoom, json) {
+  console.log('TILE', x, y, zoom, json.features.length);
 }
 
 function onBBoxLoaded(json) {
   console.log('BBOX', json.features.length);
 }
 
-// options: buffer, url, key
 var src = new OSMBuildings.Source();
 src.getAllTiles(minX, minY, maxX, maxY, onBBoxLoaded, onTileLoaded);
 ~~~
@@ -73,8 +79,8 @@ var minY = 52.5131;
 var maxX = 13.4146;
 var maxY = 52.5237;
 
-function onTileLoaded(x, y, z, json) {
-  console.log('TILE', json.features.length);
+function onTileLoaded(x, y, zoom, json) {
+  console.log('TILE', x, y, zoom, json.features.length);
 }
 
 function onBBoxLoaded(json) {
@@ -83,7 +89,6 @@ function onBBoxLoaded(json) {
   fs.writeFileSync('data.json', JSON.stringify(json));
 }
 
-// options: buffer, url, key
 var src = new OSMBuildings.Source();
 src.getAllTiles(minX, minY, maxX, maxY, onBBoxLoaded, onTileLoaded);
 ~~~

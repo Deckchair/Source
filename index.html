@@ -8,15 +8,14 @@
     var maxX = 13.4146;
     var maxY = 52.5237;
 
-    function onTileLoaded(x, y, z, json) {
-      console.log('TILE', x, y, z, json.features.length);
-    }
-
     function onBBoxLoaded(json) {
       console.log('BBOX', json.features.length);
     }
 
-    // options: buffer, url, key
+    function onTileLoaded(x, y, zoom, json) {
+      console.log('TILE', x, y, zoom, json.features.length);
+    }
+
     var src = new OSMBuildings.Source();
     src.getAllTiles(minX, minY, maxX, maxY, onBBoxLoaded, onTileLoaded);
   </script>
